@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Travel Journal</title>
+    <meta name="description" content="Track your travel adventures with this interactive journal">
+    <style>
+        /* Global Styles */
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --dark-color: #2c3e50;
+            --light-color: #ecf0f1;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f9f9f9;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* Header Styles */
+        .main-header {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .main-header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .main-nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        .main-nav li {
+            margin-left: 1.5rem;
+        }
+
+        .main-nav a {
+            padding: 0.5rem;
+            transition: color 0.3s;
+        }
+
+        .main-nav a:hover, .main-nav a.active {
+            color: var(--secondary-color);
+        }
+
+        /* Main Content Styles */
+        .welcome-section {
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        .welcome-section h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
+        }
+
+        /* Entries Grid */
+        .entries-container {
+            margin: 2rem 0;
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-controls select {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+        }
+
+        .entries-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .entry-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .entry-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .entry-image {
+            height: 200px;
+            background-color: #eee;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .entry-content {
+            padding: 1.5rem;
+        }
+
+        .entry-title {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
+        }
+
+        .entry-location {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            color: #666;
+        }
+
+        .entry-date {
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 1rem;
+        }
+
+        .entry-description {
+            margin-bottom: 1rem;
+            color: #555;
+        }
+
+        .entry-rating {
+            color: var(--warning-color);
+            font-size: 1.1rem;
+        }
+
+        /* Form Styles */
+        .form-section {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 0;
+        }
+
+        .travel-form {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="date"],
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+
+        .location-fields {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .location-fields input {
+            flex: 1;
+        }
+
+        .error-message {
+            color: var(--danger-color);
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+            display: block;
+        }
+
+        .submit-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .submit-btn:hover {
+            background-color: #2980b9;
+        }
+
+        /* Destinations Page Styles */
+        .destinations-section {
+            padding: 2rem 0;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .stat-card h3 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .map-container {
+            height: 300px;
+            background-color: #eee;
+            border-radius: 8px;
+            margin: 2rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+        }
+
+        .map-placeholder {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .destinations-list {
+            margin: 2rem 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background-color: var(--dark-color);
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        /* Footer Styles */
+        .main-footer {
+            background-color: var(--dark-color);
+            color: white;
+            text-align: center;
+            padding: 1.5rem 0;
+            margin-top: 2rem;
+        }
+
+        /* Page Routing Styles */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-header .container {
+                flex-direction: column;
+            }
+            
+            .main-nav {
+                margin-top: 1rem;
+            }
+            
+            .main-nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .main-nav li {
+                margin: 0.5rem 0;
+            }
+            
+            .location-fields {
+                flex-direction: column;
+            }
+            
+            .entries-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="main-header">
+        <div class="container">
+            <h1>My Travel Journal</h1>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="#" class="nav-link active" data-page="home">Home</a></li>
+                    <li><a href="#" class="nav-link" data-page="add-entry">Add Entry</a></li>
+                    <li><a href="#" class="nav-link" data-page="destinations">Destinations</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Home Page -->
+    <main class="container page active" id="home-page">
+        <section class="welcome-section">
+            <h2>Recent Adventures</h2>
+            <p>Relive your favorite travel moments and plan future trips</p>
+        </section>
+
+        <section class="entries-container">
+            <div class="filter-controls">
+                <select id="filter-year">
+                    <option value="all">All Years</option>
+                </select>
+                <select id="filter-country">
+                    <option value="all">All Countries</option>
+                </select>
+            </div>
+            
+            <div id="journal-entries" class="entries-grid">
+                <!-- Entries will be dynamically inserted here by JavaScript -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Add Entry Page -->
+    <main class="container page" id="add-entry-page">
+        <section class="form-section">
+            <h2>Add New Travel Entry</h2>
+            
+            <form id="entry-form" class="travel-form">
+                <div class="form-group">
+                    <label for="title">Trip Title*</label>
+                    <input type="text" id="title" name="title" required>
+                    <span class="error-message" id="title-error"></span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="location">Location*</label>
+                    <div class="location-fields">
+                        <input type="text" id="city" name="city" placeholder="City" required>
+                        <input type="text" id="country" name="country" placeholder="Country" required>
+                    </div>
+                    <span class="error-message" id="location-error"></span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="date">Date*</label>
+                    <input type="date" id="date" name="date" required>
+                    <span class="error-message" id="date-error"></span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" rows="5"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="rating">Rating (1-5)</label>
+                    <select id="rating" name="rating">
+                        <option value="5">⭐⭐⭐⭐⭐</option>
+                        <option value="4">⭐⭐⭐⭐</option>
+                        <option value="3">⭐⭐⭐</option>
+                        <option value="2">⭐⭐</option>
+                        <option value="1">⭐</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="photos">Upload Photos</label>
+                    <input type="file" id="photos" name="photos" multiple accept="image/*">
+                </div>
+                
+                <button type="submit" class="submit-btn">Save Entry</button>
+            </form>
+        </section>
+    </main>
+
+    <!-- Destinations Page -->
+    <main class="container page" id="destinations-page">
+        <section class="destinations-section">
+            <h2>My Travel Destinations</h2>
+            <p>All the amazing places I've visited</p>
+            
+            <div class="stats-container">
+                <div class="stat-card">
+                    <h3 id="total-count">0</h3>
+                    <p>Total Trips</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="country-count">0</h3>
+                    <p>Countries Visited</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="favorite-destination">-</h3>
+                    <p>Most Visited</p>
+                </div>
+            </div>
+            
+            <div id="destinations-map" class="map-container">
+                <!-- Map visualization would go here -->
+                <p class="map-placeholder">Map visualization would display here with real implementation</p>
+            </div>
+            
+            <div class="destinations-list">
+                <h3>All Destinations</h3>
+                <table id="destinations-table">
+                    <thead>
+                        <tr>
+                            <th>Country</th>
+                            <th>Cities</th>
+                            <th>Visits</th>
+                            <th>Last Visit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Table rows will be inserted by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container">
+            <p>&copy; 2023 My Travel Journal. All rights reserved.</p>
+            <p>Created with ❤️ for travel enthusiasts</p>
+        </div>
+    </footer>
+
+    <script>
+        // Travel Journal Application
+        class TravelJournal {
+            constructor() {
+                this.entries = JSON.parse(localStorage.getItem('travelEntries')) || [];
+            }
+
+            // Save entries to localStorage
+            saveEntries() {
+                localStorage.setItem('travelEntries', JSON.stringify(this.entries));
+            }
+
+            // Add a new entry
+            addEntry(entry) {
+                this.entries.push(entry);
+                this.saveEntries();
+            }
+
+            // Get all entries
+            getAllEntries() {
+                return this.entries;
+            }
+
+            // Get entries filtered by year and/or country
+            getFilteredEntries(year = 'all', country = 'all') {
+                return this.entries.filter(entry => {
+                    const entryYear = new Date(entry.date).getFullYear().toString();
+                    const matchesYear = year === 'all' || entryYear === year;
+                    const matchesCountry = country === 'all' || entry.country.toLowerCase() === country.toLowerCase();
+                    return matchesYear && matchesCountry;
+                });
+            }
+
+            // Get unique years from all entries
+            getUniqueYears() {
+                const years = new Set();
+                this.entries.forEach(entry => {
+                    years.add(new Date(entry.date).getFullYear().toString());
+                });
+                return Array.from(years).sort((a, b) => b - a);
+            }
+
+            // Get unique countries from all entries
+            getUniqueCountries() {
+                const countries = new Set();
+                this.entries.forEach(entry => {
+                    countries.add(entry.country);
+                });
+                return Array.from(countries).sort();
+            }
+
+            // Get statistics for destinations page
+            getDestinationStats() {
+                const stats = {
+                    totalTrips: this.entries.length,
+                    countries: {},
+                    mostVisited: { count: 0, destination: '' }
+                };
+
+                this.entries.forEach(entry => {
+                    const country = entry.country;
+                    
+                    // Count visits per country
+                    if (!stats.countries[country]) {
+                        stats.countries[country] = {
+                            count: 0,
+                            cities: new Set(),
+                            lastVisit: ''
+                        };
+                    }
+                    
+                    stats.countries[country].count++;
+                    stats.countries[country].cities.add(entry.city);
+                    
+                    // Track most recent visit
+                    if (!stats.countries[country].lastVisit || 
+                        new Date(entry.date) > new Date(stats.countries[country].lastVisit)) {
+                        stats.countries[country].lastVisit = entry.date;
+                    }
+                    
+                    // Track most visited destination
+                    if (stats.countries[country].count > stats.mostVisited.count) {
+                        stats.mostVisited.count = stats.countries[country].count;
+                        stats.mostVisited.destination = country;
+                    }
+                });
+
+                return stats;
+            }
+        }
+
+        // Initialize the journal
+        const myTravelJournal = new TravelJournal();
+
+        // DOM Functions
+        function displayEntries(filterYear = 'all', filterCountry = 'all') {
+            const entriesContainer = document.getElementById('journal-entries');
+            if (!entriesContainer) return;
+
+            const filteredEntries = myTravelJournal.getFilteredEntries(filterYear, filterCountry);
+            
+            if (filteredEntries.length === 0) {
+                entriesContainer.innerHTML = '<p class="no-entries">No entries found. Add your first travel entry!</p>';
+                return;
+            }
+
+            entriesContainer.innerHTML = filteredEntries.map(entry => `
+                <div class="entry-card">
+                    <div class="entry-image" style="background-image: url('https://source.unsplash.com/random/600x400/?${entry.city}')"></div>
+                    <div class="entry-content">
+                        <h3 class="entry-title">${entry.title}</h3>
+                        <div class="entry-location">
+                            <span>${entry.city}, ${entry.country}</span>
+                        </div>
+                        <div class="entry-date">${formatDate(entry.date)}</div>
+                        <p class="entry-description">${entry.description || 'No description provided.'}</p>
+                        <div class="entry-rating">${getRatingStars(entry.rating)}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function populateFilterOptions() {
+            const yearSelect = document.getElementById('filter-year');
+            const countrySelect = document.getElementById('filter-country');
+            
+            if (yearSelect) {
+                const years = myTravelJournal.getUniqueYears();
+                years.forEach(year => {
+                    const option = document.createElement('option');
+                    option.value = year;
+                    option.textContent = year;
+                    yearSelect.appendChild(option);
+                });
+                
+                yearSelect.addEventListener('change', () => {
+                    displayEntries(yearSelect.value, document.getElementById('filter-country').value);
+                });
+            }
+            
+            if (countrySelect) {
+                const countries = myTravelJournal.getUniqueCountries();
+                countries.forEach(country => {
+                    const option = document.createElement('option');
+                    option.value = country;
+                    option.textContent = country;
+                    countrySelect.appendChild(option);
+                });
+                
+                countrySelect.addEventListener('change', () => {
+                    displayEntries(document.getElementById('filter-year').value, countrySelect.value);
+                });
+            }
+        }
+
+        function displayDestinationStats() {
+            const stats = myTravelJournal.getDestinationStats();
+            
+            document.getElementById('total-count').textContent = stats.totalTrips;
+            document.getElementById('country-count').textContent = Object.keys(stats.countries).length;
+            document.getElementById('favorite-destination').textContent = stats.mostVisited.destination || '-';
+        }
+
+        function populateDestinationsTable() {
+            const tableBody = document.querySelector('#destinations-table tbody');
+            if (!tableBody) return;
+            
+            const stats = myTravelJournal.getDestinationStats();
+            tableBody.innerHTML = '';
+            
+            Object.entries(stats.countries).forEach(([country, data]) => {
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td>${country}</td>
+                    <td>${Array.from(data.cities).join(', ')}</td>
+                    <td>${data.count}</td>
+                    <td>${formatDate(data.lastVisit)}</td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Helper Functions
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString(undefined, options);
+        }
+
+        function getRatingStars(rating) {
+            return '⭐'.repeat(rating) + '☆'.repeat(5 - rating);
+        }
+
+        function validateForm() {
+            let isValid = true;
+            
+            // Validate title
+            const title = document.getElementById('title');
+            const titleError = document.getElementById('title-error');
+            if (!title.value.trim()) {
+                titleError.textContent = 'Please enter a trip title';
+                isValid = false;
+            } else {
+                titleError.textContent = '';
+            }
+            
+            // Validate location
+            const city = document.getElementById('city');
+            const country = document.getElementById('country');
+            const locationError = document.getElementById('location-error');
+            if (!city.value.trim() || !country.value.trim()) {
+                locationError.textContent = 'Please enter both city and country';
+                isValid = false;
+            } else {
+                locationError.textContent = '';
+            }
+            
+            // Validate date
+            const date = document.getElementById('date');
+            const dateError = document.getElementById('date-error');
+            if (!date.value) {
+                dateError.textContent = 'Please select a date';
+                isValid = false;
+            } else {
+                dateError.textContent = '';
+            }
+            
+            return isValid;
+        }
+
+        function saveEntry() {
+            const title = document.getElementById('title').value;
+            const city = document.getElementById('city').value;
+            const country = document.getElementById('country').value;
+            const date = document.getElementById('date').value;
+            const description = document.getElementById('description').value;
+            const rating = document.getElementById('rating').value;
+            
+            const newEntry = {
+                title,
+                city,
+                country,
+                date,
+                description,
+                rating: parseInt(rating),
+                createdAt: new Date().toISOString()
+            };
+            
+            myTravelJournal.addEntry(newEntry);
+        }
+
+        // Page Routing
+        function setupPageRouting() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const pages = document.querySelectorAll('.page');
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Update active nav link
+                    navLinks.forEach(navLink => navLink.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show the selected page
+                    const pageId = this.getAttribute('data-page');
+                    pages.forEach(page => {
+                        page.classList.remove('active');
+                        if (page.id === `${pageId}-page`) {
+                            page.classList.add('active');
+                        }
+                    });
+                    
+                    // Initialize page content if needed
+                    if (pageId === 'home') {
+                        displayEntries();
+                        populateFilterOptions();
+                    } else if (pageId === 'destinations') {
+                        displayDestinationStats();
+                        populateDestinationsTable();
+                    }
+                });
+            });
+        }
+
+        // Form Submission
+        function setupFormSubmission() {
+            const form = document.getElementById('entry-form');
+            if (!form) return;
+            
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                if (validateForm()) {
+                    saveEntry();
+                    form.reset();
+                    alert('Entry saved successfully!');
+                    
+                    // Switch to home page and refresh entries
+                    document.querySelector('.nav-link[data-page="home"]').click();
+                }
+            });
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            setupPageRouting();
+            setupFormSubmission();
+            
+            // Initialize home page by default
+            displayEntries();
+            populateFilterOptions();
+        });
+    </script>
+</body>
+</html>
